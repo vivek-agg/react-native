@@ -1,22 +1,25 @@
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
+import ReduxThunk from "redux-thunk";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { composeWithDevTools } from "redux-devtools-extension";
 import ProductReducer from "./store/reducers/products";
 import cartReducer from "./store/reducers/cart";
 import OrderReducer from "./store/reducers/orders";
-import ShopNavigator from "./navigation/ShopNavigator";
+import AuthReducer from "./store/reducers/auth";
+import NavigationContainer from "./navigation/NavigationContainer";
 
 const rootReducer = combineReducers({
   products: ProductReducer,
   cart: cartReducer,
   orders: OrderReducer,
+  auth: AuthReducer,
 });
 
-const store = createStore(rootReducer, composeWithDevTools());
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
@@ -40,7 +43,7 @@ export default function App() {
   }
   return (
     <Provider store={store}>
-      <ShopNavigator />
+      <NavigationContainer />
     </Provider>
   );
 }
